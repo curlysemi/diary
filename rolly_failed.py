@@ -17,8 +17,6 @@ def encode(s, name, *args, **kwargs):
         raise TypeError('Not a string or byte codec')
     return rv
 
-import numpy as np
-
 # felipa
 # https://codegolf.stackexchange.com/questions/10701/fastest-code-to-find-the-next-prime
 
@@ -176,6 +174,7 @@ def next_prime(n):
         return i
       i += o
 
+# import numpy as np
 # def seive(n):
 #     mask = np.ones(n+1)
 #     mask[:2] = 0
