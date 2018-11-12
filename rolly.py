@@ -215,7 +215,13 @@ class PKCS7Encoder(object):
         val = self.k - (l % self.k)
         for _ in xrange(val):
             output.write('%02x' % val)
-        return text + binascii.unhexlify(output.getvalue())
+        encoded = binascii.unhexlify(output.getvalue())
+        # print(type(encoded))
+        # print(encoded)
+        # print(type(text))
+        # print(text)
+        encoded = ''.join( chr(x) for x in bytearray(encoded) )
+        return text + encoded
 
 
 ###
@@ -240,6 +246,9 @@ def get_prefix(index):
 def prepend(msg, index):
     return get_prefix(index) + msg 
 
+def get_key(password):
+    return hashlib.sha256(encode(password, 'utf-8')).digest()
+
 def enc(msgs, keys, diff = 0, index = 0):
     new_msgs = []
     for msg in msgs:
@@ -251,7 +260,6 @@ def enc(msgs, keys, diff = 0, index = 0):
     max_len = len(max(msgs, key=len))
     # print(max_len)
     len_to_use = next_prime(rand_min(next_prime(max_len * (len(msgs) + diff))))
-    # print(len_to_use)
     ciphertexts = []
     encoder = PKCS7Encoder(len_to_use)
     nonce = get_nonce(index)
@@ -261,16 +269,12 @@ def enc(msgs, keys, diff = 0, index = 0):
         else:
             plaintext = msgs[i]
             plaintext = encoder.encode(plaintext)
-        #n = int(hashlib.sha256(keys[i]).hexdigest(), 16) 
         if i >= len(keys) or keys[i] is None:
             key = get_random_bytes(32)
         else:
-            key = hashlib.sha256(keys[i]).digest()  #str(n).encode()
-        # print(key)
+            key = get_key(keys[i])
         cipher = ChaCha20.new(key=key, nonce=nonce)
-        # cipher = ChaCha20.new(key=key)
         ciphertext = cipher.encrypt(plaintext)
-        # nonce = b64encode(cipher.nonce).decode('utf-8')
         ciphertexts.append(ciphertext)
     cryptorand = SystemRandom()
     cryptorand.shuffle(ciphertexts)
@@ -278,8 +282,8 @@ def enc(msgs, keys, diff = 0, index = 0):
 
 from base64 import b64decode
 
-def dec(msgs, key, index):
-    key = hashlib.sha256(key).digest()
+def dec(msgs, password, index):
+    key = get_key(password)
     nonce = get_nonce(index)
     decs = []
     encoder = PKCS7Encoder(len(msgs))
