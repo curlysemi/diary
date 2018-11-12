@@ -317,6 +317,7 @@ def get_keys(power = 10, max_length = None):
     y,z = nps_dict[str(a)], nps_dict[str(b)]
     return a,b,y,z
 
+# DOES NOT WORK
 def get_msg(enc_msg, key, power):
     modulus = get_modulus(2**power)
     msg = ''
@@ -332,7 +333,5 @@ print(encrypted)
 print('')
 print('secret_key: ' + str(secret_key))
 print('')
-# secret_message = 
-print('secret_msg:' )
 print('decoy_key: ' + str(decoy_key))
 print('')
