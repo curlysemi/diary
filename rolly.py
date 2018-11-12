@@ -6,6 +6,8 @@
 def legendre(a, m):
   return pow(a, (m-1) >> 1, m)
 
+xrange=range
+
 # strong probable prime
 def is_sprp(n, b=2):
   d = n-1
@@ -180,7 +182,10 @@ def rand_min(min_val):
 ### https://gist.github.com/chrix2/4171336
 
 import binascii
-import StringIO
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 class PKCS7Encoder(object):
     def __init__(self, k=16):
@@ -206,7 +211,7 @@ class PKCS7Encoder(object):
         Pad an input string according to PKCS#7
         '''
         l = len(text)
-        output = StringIO.StringIO()
+        output = StringIO()
         val = self.k - (l % self.k)
         for _ in xrange(val):
             output.write('%02x' % val)
@@ -244,9 +249,9 @@ def enc(msgs, keys, diff = 0, index = 0):
             new_msgs.append(None)
     msgs = new_msgs
     max_len = len(max(msgs, key=len))
-    print max_len
+    # print(max_len)
     len_to_use = next_prime(rand_min(next_prime(max_len * (len(msgs) + diff))))
-    print len_to_use
+    # print(len_to_use)
     ciphertexts = []
     encoder = PKCS7Encoder(len_to_use)
     nonce = get_nonce(index)
@@ -261,7 +266,7 @@ def enc(msgs, keys, diff = 0, index = 0):
             key = get_random_bytes(32)
         else:
             key = hashlib.sha256(keys[i]).digest()  #str(n).encode()
-        # print key
+        # print(key)
         cipher = ChaCha20.new(key=key, nonce=nonce)
         # cipher = ChaCha20.new(key=key)
         ciphertext = cipher.encrypt(plaintext)
