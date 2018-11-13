@@ -1,57 +1,65 @@
-import os, json
-from lib.models.entry import Entry 
-import lib.utils.diary_util as diary_util
+import Tkinter
+from Tkinter import *
+from ScrolledText import *
+import tkFileDialog
+import tkMessageBox
 
-DIRECTORY = '.entries'
-EXT = '.dat'
+root = Tkinter.Tk(className=" diary")
 
-def filename_to_index(filename):
-    return int(filename.replace(EXT, ''))
+HEIGHT = 10
 
-def index_to_filename(index):
-    return os.path.join(DIRECTORY, str(index) + EXT)
+text_pads = []
 
-def get_next_available_index():
-    next_index = 0
-    if os.path.exists(DIRECTORY):
-        files = [f for f in os.listdir(DIRECTORY) if os.path.isfile(os.path.join(DIRECTORY, f))]
-        if files:
-            files.sort(key=filename_to_index)
-            last = filename_to_index(files[-1])
-            next_index = last + 1
-    return next_index
+def add_textpad():
+    new_tp = ScrolledText(root, height=HEIGHT)
+    new_tp.grid(row=len(text_pads))
+    text_pads.append(new_tp)
 
-def create_entry(message_password_pairs):
-    index = get_next_available_index()
-    messages = []
-    passwords = []
-    for message,password in message_password_pairs:
-        messages.append(message)
-        passwords.append(password)
-    encrypted_entry_data = diary_util.enc(messages, passwords, index)
-    entry = Entry(encrypted_entry_data, index)
-    return entry
+def remove_textpad():
+    # We'll always leave 1
+    if text_pads and len(text_pads) > 1:
+        last_tp = text_pads[-1]
+        last_tp.grid_forget()
+        text_pads.remove(last_tp)
 
-def save_entry(entry):
-    if not os.path.exists(DIRECTORY):
-        os.makedirs(DIRECTORY)
-    filename = index_to_filename(entry.index)
-    entry_file = open(filename, 'w')
-    entry_file.write(entry.serialize())
-    entry_file.close()
+# def open_command():
+#     file = tkFileDialog.askopenfile(parent=root,mode='rb',title='Select a file')
+#     if file != None:
+#         contents = file.read()
+#         textPad.insert('1.0',contents)
+#         file.close()
 
-import base64
-def read_entry(index, password):
-    # try:
-    filename = index_to_filename(index)
-    entry_file = open(filename, 'r')
-    serialized_encrypted_entry_data = entry_file.read()
-    entry_file.close()
-    encrypted_entry_data = json.loads(serialized_encrypted_entry_data)
-    data = []
-    for datum in encrypted_entry_data:
-        data.append(base64.b64decode(datum))
-    return diary_util.dec(data, password, index)
-    # except:
-    #     print('Error reading file!')
-    #     return None
+# def save_command(self):
+#     file = tkFileDialog.asksaveasfile(mode='w')
+#     if file != None:
+#         data = self.textPad.get('1.0', END+'-1c')
+#         file.write(data)
+#         file.close()
+        
+def exit_command():
+    if tkMessageBox.askokcancel("Quit", "Do you really want to quit?"):
+        root.destroy()
+
+def about_command():
+    label = tkMessageBox.showinfo("About", "diary\nThis is a proof of concept.\ndeveloped by {;\nMIT License")
+        
+
+def dummy():
+    print "I am a Dummy Command, I will be removed in the next step"
+menu = Menu(root)
+root.config(menu=menu)
+filemenu = Menu(menu)
+menu.add_cascade(label="File", menu=filemenu)
+filemenu.add_command(label="New", command=dummy)
+menu.add_command(label="Add Msg", command=add_textpad)
+menu.add_command(label="Remove Msg", command=remove_textpad)
+# filemenu.add_command(label="Open...", command=open_command)
+# filemenu.add_command(label="Save", command=save_command)
+# filemenu.add_separator()
+filemenu.add_command(label="Exit", command=exit_command)
+helpmenu = Menu(menu)
+menu.add_cascade(label="Help", menu=helpmenu)
+helpmenu.add_command(label="About...", command=about_command)
+
+add_textpad()
+root.mainloop()
