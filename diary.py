@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import Tkinter, tkSimpleDialog
 from Tkinter import *
 from ScrolledText import *
@@ -58,8 +60,6 @@ def exit_command():
 def about_command():
     label = tkMessageBox.showinfo("About", "diary\nThis is a proof of concept.\ndeveloped by {;\nMIT License")
 
-def dummy():
-    print "I am a Dummy Command, I will be removed in the next step"
 menu = Menu(root)
 root.config(menu=menu)
 filemenu = Menu(menu)
