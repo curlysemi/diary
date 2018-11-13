@@ -19,6 +19,7 @@ Python3 not yet supported.
 
 ## Installation
 ```
+sudo apt-get install python-tk
 pip install pycryptodome
 ```
 

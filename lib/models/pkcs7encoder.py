@@ -6,6 +6,8 @@ try:
 except ImportError:
     from io import StringIO
 
+from ..utils.safe_encodings import safe_encode
+
 class PKCS7Encoder(object):
     def __init__(self, k=16):
        self.k = k
@@ -35,9 +37,11 @@ class PKCS7Encoder(object):
         for _ in xrange(val):
             output.write('%02x' % val)
         encoded = binascii.unhexlify(output.getvalue())
-        # print(type(encoded))
-        # print(encoded)
-        # print(type(text))
-        # print(text)
+        print(type(encoded))
+        print(encoded)
+        print(type(text))
+        print(text)
         encoded = ''.join( chr(x) for x in bytearray(encoded) )
+        # text = ''.join( chr(x) for x in bytearray(text) )
+        text = safe_encode(text, 'ascii')
         return text + encoded

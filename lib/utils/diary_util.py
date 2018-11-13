@@ -24,7 +24,9 @@ def prepend(msg, index):
     return get_prefix(index) + msg 
 
 def get_key(password):
-    return hashlib.sha256(safe_encode(password, 'utf-8')).digest()
+    key = hashlib.sha256(safe_encode(password, 'utf-8'))
+    print(key.hexdigest())
+    return key.digest()
 
 def enc(msgs, keys, diff = 0, index = 0):
     new_msgs = []
@@ -50,6 +52,7 @@ def enc(msgs, keys, diff = 0, index = 0):
         else:
             key = get_key(keys[i])
         cipher = ChaCha20.new(key=key, nonce=nonce)
+        print(plaintext)
         ciphertext = cipher.encrypt(plaintext)
         ciphertexts.append(ciphertext)
     shuffle(ciphertexts)
@@ -74,3 +77,4 @@ def dec(msgs, password, index):
         if dec.startswith(prefix):
             matches.append(dec.replace(prefix, ''))
     return matches
+    # return decs

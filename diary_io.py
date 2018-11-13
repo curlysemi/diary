@@ -28,6 +28,8 @@ def create_entry(message_password_pairs):
     for message,password in message_password_pairs:
         messages.append(message)
         passwords.append(password)
+    print(messages)
+    print(passwords)
     encrypted_entry_data = diary_util.enc(messages, passwords, index)
     entry = Entry(encrypted_entry_data, index)
     return entry
