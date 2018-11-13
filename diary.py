@@ -45,7 +45,6 @@ def save_command():
         message = tp.get('1.0', END+'-1c')
         password = get_password('Enter a password (for "' + message[0:7].replace('\n','') + '"):')
         message_password_pairs.append((message, password))
-    # print(message_password_pairs)
     entry = diary_io.create_entry(message_password_pairs)
     diary_io.save_entry(entry)
     for i in range(len(text_pads)):

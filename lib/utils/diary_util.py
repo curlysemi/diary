@@ -15,7 +15,6 @@ def get_nonce(index):
     bs = []
     for i in range(0, len(s), 8):
         bs.append(int(s[i : i + 8], 2))
-    # print(bs)
     return bytearray(bs)
 
 def get_prefix(index):
@@ -26,11 +25,9 @@ def prepend(msg, index):
 
 def get_key(password):
     key = hashlib.sha256(safe_encode(password, 'utf-8'))
-    # print(key.hexdigest())
     return key.digest()
 
 def enc(msgs, keys, diff = 0, index = 0):
-    # print(index)
     new_msgs = []
     for msg in msgs:
         if msg is not None:
@@ -54,7 +51,6 @@ def enc(msgs, keys, diff = 0, index = 0):
         else:
             key = get_key(keys[i])
         cipher = ChaCha20.new(key=key, nonce=nonce)
-        # print(plaintext)
         ciphertext = cipher.encrypt(plaintext)
         ciphertexts.append(ciphertext)
     shuffle(ciphertexts)
