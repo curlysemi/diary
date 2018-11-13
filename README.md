@@ -25,3 +25,12 @@ pip install pycryptodome
 ## TODOs
 * Support python3
   * Internet keeps dying, so last error that needs to be Googled is `TypeError: Object type <class 'str'> cannot be passed to C code`.
+
+## Example
+```
+entry = create_entry([('secret','real'),('decoy','fake')])
+save_entry(entry)
+read_entry(0, 'real')
+```
+
+https://stackoverflow.com/questions/12309269/how-do-i-write-json-data-to-a-file/14870531#14870531

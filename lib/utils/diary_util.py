@@ -1,13 +1,11 @@
 from safe_encodings import safe_encode
 from primes import next_prime
 from randoms import rand_min, get_random_bytes, shuffle
-from pkcs7encoder import PKCS7Encoder
+from ..models.pkcs7encoder import PKCS7Encoder
 
 xrange=range
 
 ###
-import json
-from base64 import b64encode
 from Crypto.Cipher import ChaCha20
 
 import hashlib
@@ -57,15 +55,13 @@ def enc(msgs, keys, diff = 0, index = 0):
     shuffle(ciphertexts)
     return ciphertexts
 
-from base64 import b64decode
-
 def dec(msgs, password, index):
     key = get_key(password)
     nonce = get_nonce(index)
     decs = []
     encoder = PKCS7Encoder(len(msgs))
     for enc_msg in msgs:
-        ciphertext = enc_msg # b64decode(enc_msg)
+        ciphertext = enc_msg
         cipher = ChaCha20.new(key=key, nonce=nonce)
         plaintext = cipher.decrypt(ciphertext)
         try:
