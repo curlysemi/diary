@@ -2,13 +2,10 @@ from safe_encodings import safe_encode
 from primes import next_prime
 from randoms import rand_min, get_random_bytes, shuffle
 from ..models.pkcs7encoder import PKCS7Encoder
+from Crypto.Cipher import ChaCha20
+import hashlib
 
 xrange=range
-
-###
-from Crypto.Cipher import ChaCha20
-
-import hashlib
 
 def get_nonce(index):
     s = bin(index)[2:].zfill(12*8)
@@ -75,4 +72,3 @@ def dec(msgs, password, index):
         if dec.startswith(prefix):
             matches.append(dec.replace(prefix, ''))
     return matches
-    # return decs

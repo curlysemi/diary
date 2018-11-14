@@ -1,6 +1,7 @@
 import os, json
 from lib.models.entry import Entry
 import lib.utils.diary_util as diary_util
+import base64
 
 DIRECTORY = '.entries'
 EXT = '.dat'
@@ -40,9 +41,7 @@ def save_entry(entry):
     entry_file.write(entry.serialize())
     entry_file.close()
 
-import base64
 def read_entry(index, password):
-    # try:
     filename = index_to_filename(index)
     entry_file = open(filename, 'r')
     serialized_encrypted_entry_data = entry_file.read()
@@ -52,6 +51,3 @@ def read_entry(index, password):
     for datum in encrypted_entry_data:
         data.append(base64.b64decode(datum))
     return diary_util.dec(data, password, index)
-    # except:
-    #     print('Error reading file!')
-    #     return None
